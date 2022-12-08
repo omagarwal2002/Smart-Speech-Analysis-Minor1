@@ -1,2 +1,2 @@
 # Speech-Analysis-and-Authentication-Minor1
-This repository contains the code of my minor project that I performed in my 5th semester.
+This repository contains the code of our minor project that we performed in my 5th semester.
