@@ -3,7 +3,7 @@ This repository contains the code of our minor project that we performed in my 5
 
 In the repository files present are as follows:
 
---> previous models : This folder contains all the previosly trained models and the .ipynb files that contains the codes of their training. These are the models that are trained on some single dataset like TESS, RAVDESS, CREMA or our initial custom dataset which was the combinantion of these three datasets.
+--> previous models : This folder contains all the previosly trained models and the .ipynb files that contains the codes of their training. These are the models that are trained on some single dataset like TESS, RAVDESS, CREMA-D or our initial custom dataset which was the combinantion of these three datasets.
 
 --> previous predictions : This folder contains the .csv files of predictions made by previos models on different datasets.
 
@@ -18,3 +18,15 @@ In the repository files present are as follows:
 --> merge_datasets.ipynb : This is the jupyter file which contains the code of creating our final custom dataset.
 
 --> prediction_custom_data_final.csv : This csv file contains the predictions made by our final model on the testing part of final custom dataset.
+
+# Our Web App
+
+Our webapp of this project cam be accessed through this link: https://soft-ui-pro-fkxy8h.teleporthq.app/
+
+# Our custom dataset
+
+This is a dataset that contains 19,487 Audio(.wav) files divided into 6 emotions {'happy','sad','angry','surprise','neutral','fear'}.
+
+This dataset is a merged dataset that contains the audio files of above 6 emotions taken from the open source Speech Emotion Recognition datasets: RAVDESS, CREMA-D, TESS, SAVEE and ASVP-ESD.
+
+You can easily acccess this dataset from Kaggle: 
