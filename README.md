@@ -25,8 +25,8 @@ Our webapp of this project cam be accessed through this link: https://soft-ui-pr
 
 # Our Custom Dataset
 
-This is a dataset that contains 19,487 Audio(.wav) files divided into 6 emotions {'happy','sad','angry','surprise','neutral','fear'}.
+This is a dataset that contains 19,487 Audio(.wav) files divided into 6 emotions {'happy', 'sad', 'angry', 'surprise', 'neutral', 'fear'}.
 
 This dataset is a merged dataset that contains the audio files of above 6 emotions taken from the open source Speech Emotion Recognition datasets: RAVDESS, CREMA-D, TESS, SAVEE and ASVP-ESD.
 
-You can easily acccess this dataset from Kaggle: 
+You can easily acccess this dataset from Kaggle: https://www.kaggle.com/datasets/omagarwal2411/nor-smart-speech?datasetId=2716311&sortBy=dateRun&tab=profile
