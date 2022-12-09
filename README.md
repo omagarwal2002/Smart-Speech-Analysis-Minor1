@@ -7,6 +7,8 @@ In the repository files present are as follows:
 
 --> previous predictions : This folder contains the .csv files of predictions made by previos models on different datasets.
 
+--> Project Presentation.pptx : It is the ppt of our final presenatation of this project. 
+
 --> SER_by_NOR.ipynb : This is the jupyter nodetbbok file in which our final MLP model is trained on our final custom dataset.
 
 --> SER_by_NOR.pkl : This is the our final trained MLP model file.
