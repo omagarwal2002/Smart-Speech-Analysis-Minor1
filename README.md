@@ -25,7 +25,7 @@ In the repository files present are as follows:
 
 Our webapp of this project cam be accessed through this link: https://soft-ui-pro-fkxy8h.teleporthq.app/
 
-<Currently we are working on it.> 
+< Currently we are working on it. > 
 
 # Our Custom Dataset
 
