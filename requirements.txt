@@ -3,5 +3,4 @@ numpy
 pandas 
 librosa
 soundfile 
-io
 pickle
