@@ -20,11 +20,15 @@ In the repository files present are as follows:
 
 --> SRS.pdf : This is Software Requirement Specifiaction doc of our project.
 
+--> app.py : This is Streamlit code file of our webapp.
+
 --> main.py : This is the main python file our our GUI.
 
 --> merge_datasets.ipynb : This is the jupyter file which contains the code of creating our final custom dataset.
 
 --> prediction_custom_data_final.csv : This csv file contains the predictions made by our final model on the testing part of final custom dataset.
+
+--> requirements.txt : This file contains the python libraries to be installed for running the webapp.
 
 # Our Web App
 
