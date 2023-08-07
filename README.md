@@ -34,7 +34,12 @@ In the repository files present are as follows:
 
 Our webapp of this project cam be accessed through this link: https://soft-ui-pro-fkxy8h.teleporthq.app/
 
-< Currently we are working on it. > 
+# Outputs
+Here are some sample outputs of my model:
+
+![image](https://github.com/omagarwal2002/Smart-Speech-Analysis-Minor1/assets/75072839/550c8b61-aadf-43ee-b8c4-2463b0dd5910)
+
+![image](https://github.com/omagarwal2002/Smart-Speech-Analysis-Minor1/assets/75072839/c2392f7a-8b9e-47ba-a42e-7475315c112c)
 
 # Our Custom Dataset
 
