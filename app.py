@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -6,7 +7,7 @@ import soundfile as sf
 import io
 import pickle
 
-def download_model_weights(url, save_path):
+def download_model(url, save_path):
     response = requests.get(url)
     with open(save_path, 'wb') as f:
         f.write(response.content)
@@ -14,7 +15,7 @@ def download_model_weights(url, save_path):
 # Download the model weights if not already present
 model_url = "https://github.com/omagarwal2002/Smart-Speech-Analysis-Minor1/raw/main/SER_by_NOR.pkl"
 local_model= "SER_by_NOR.pkl"
-download_model_weights(model_url, local_model)
+download_model(model_url, local_model)
 
 def envelope(y, rate, threshold):
     mask = []
