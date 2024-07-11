@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -5,6 +6,16 @@ import librosa
 import soundfile as sf
 import io
 import pickle
+
+def download_model(url, save_path):
+    response = requests.get(url)
+    with open(save_path, 'wb') as f:
+        f.write(response.content)
+
+# Download the model weights if not already present
+model_url = "https://github.com/omagarwal2002/Smart-Speech-Analysis-Minor1/raw/main/SER_by_NOR.pkl"
+local_model= "SER_by_NOR.pkl"
+download_model(model_url, local_model)
 
 def envelope(y, rate, threshold):
     mask = []
@@ -51,7 +62,7 @@ def main():
         ans = np.array(ans)
 
         # Load the pre-trained model (change the filename to your actual model's filename)
-        Pkl_Filename = "F:/VS Code/Minor1_midsem/SER_by_NOR.pkl"
+        Pkl_Filename = local_model
         with open(Pkl_Filename, 'rb') as file:  
             model = pickle.load(file)
 
