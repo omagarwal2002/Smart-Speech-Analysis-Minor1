@@ -1,78 +1,88 @@
-import requests
 import streamlit as st
-import numpy as np
-import pandas as pd
-import librosa
-import soundfile as sf
-import io
-import pickle
+from langchain_community.document_loaders import CSVLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.llms import CTransformers
+from langchain.chains import ConversationalRetrievalChain
+import os
+import requests
+
 
 def download_model(url, save_path):
     response = requests.get(url)
     with open(save_path, 'wb') as f:
         f.write(response.content)
 
-# Download the model weights if not already present
-model_url = "https://github.com/omagarwal2002/Smart-Speech-Analysis-Minor1/raw/main/SER_by_NOR.pkl"
-local_model= "SER_by_NOR.pkl"
+
+
+# Download the model 
+model_url = "https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/blob/main/llama-2-7b-chat.ggmlv3.q4_0.bin"
+local_model= "models/llama-2-7b-chat.ggmlv3.q4_0.bin"
 download_model(model_url, local_model)
 
-def envelope(y, rate, threshold):
-    mask = []
-    y = pd.Series(y).apply(np.abs)
-    y_mean = y.rolling(window=int(rate / 10), min_periods=1, center=True).mean()
-    for mean in y_mean:
-        if mean > threshold:
-            mask.append(True)
-        else:
-            mask.append(False)
-    return mask
 
-
-def extract_feature(y, mfcc, chroma, mel, sample_rate):
-    if chroma:
-        stft = np.abs(librosa.stft(y))
-    result = np.array([])
-    if mfcc:
-        mfccs = np.mean(librosa.feature.mfcc(y=y, sr=sample_rate, n_mfcc=40).T, axis=0)
-        result = np.hstack((result, mfccs))
-    if chroma:
-        chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
-        result = np.hstack((result, chroma))
-    if mel:
-        mel = np.mean(librosa.feature.melspectrogram(y=y, sr=sample_rate).T, axis=0)  
-        result = np.hstack((result, mel))
-    return result
+# Constants
+DB_FAISS_PATH = "vectorstore/db_faiss"
 
 def main():
-    st.title("SPEECH EMOTION RECOGNIZER")
-    st.write("Upload an audio clip and get its emotion present in it.")
+    st.title("CSV Chatbot with LangChain")
 
-    # Record Audio
-    audio_file = st.file_uploader("Upload audio", type=["wav"])
+    # Upload CSV file
+    uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
+    
+    if uploaded_file is not None:
+        # Load CSV file
+        with st.spinner("Loading CSV file..."):
+            loader = CSVLoader(file_path=uploaded_file, encoding="utf-8", csv_args={'delimiter': ','})
+            data = loader.load()
+        
+        # Split the text into Chunks
+        with st.spinner("Splitting text into chunks..."):
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=20)
+            text_chunks = text_splitter.split_documents(data)
+        
+        # Download Sentence Transformers Embedding From Hugging Face
+        with st.spinner("Generating embeddings..."):
+            embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
+        
+        # Convert the text Chunks into embeddings and save the embeddings into FAISS Knowledge Base
+        with st.spinner("Creating vector store..."):
+            docsearch = FAISS.from_documents(text_chunks, embeddings)
+            if not os.path.exists(DB_FAISS_PATH):
+                os.makedirs(DB_FAISS_PATH)
+            docsearch.save_local(DB_FAISS_PATH)
+        
+        # Load LLM
+        llm = CTransformers(
+            model="models/llama-2-7b-chat.ggmlv3.q4_0.bin",
+            model_type="llama",
+            max_new_tokens=512,
+            temperature=0.1
+        )
+        
+        # Initialize QA chain
+        qa = ConversationalRetrievalChain.from_llm(llm, retriever=docsearch.as_retriever())
 
-    if st.button("Extract Features and Make Prediction") and audio_file is not None:
-        audio_data = audio_file.read()
-        y, sample_rate = sf.read(io.BytesIO(audio_data))
-        envelope_mask = envelope(y, rate=sample_rate, threshold=0.0005)
-        y_filtered = y[envelope_mask]
-        ans =[]
-        new_feature = extract_feature(y_filtered, mfcc=True, chroma=True, mel=True, sample_rate=sample_rate)
-        ans.append(new_feature)
-        ans = np.array(ans)
+        st.success("CSV file processed successfully! You can now ask questions.")
 
-        # Load the pre-trained model (change the filename to your actual model's filename)
-        Pkl_Filename = local_model
-        with open(Pkl_Filename, 'rb') as file:  
-            model = pickle.load(file)
+        chat_history = []
 
-        # Make prediction
-        prediction = model.predict(ans)
-        emotion = prediction[0]
+        # Chatbot interface
+        while True:
+            query = st.text_input("Enter your query (or type 'exit' to quit):")
 
-        # Show prediction result
-        st.write("Emotion Present:")
-        st.write(emotion)
+            if query.lower() == 'exit':
+                st.write('Exiting')
+                break
+            
+            if query.strip() == '':
+                continue
+
+            with st.spinner("Generating response..."):
+                result = qa.invoke({"question": query, "chat_history": chat_history})
+                st.write("Response: ", result['answer'])
+                chat_history.append((query, result['answer']))
 
 if __name__ == "__main__":
     main()
